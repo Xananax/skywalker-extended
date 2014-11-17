@@ -1,0 +1,36 @@
+{
+  "name": "skywalker-x",
+  "version": "0.5.0",
+  "description": "Builds on [skywalker](https://github.com/Xananax/skywalker) and provides several filters and convenience functions.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "checksum": "^0.1.1",
+    "filesize": "^2.0.4",
+    "image-size": "^0.3.5",
+    "jade": "^1.7.0",
+    "less": "^1.7.5",
+    "markdown": "^0.5.0",
+    "node-sass": "^1.2.2",
+    "node-xml-lite": "^0.0.3",
+    "skywalker": "^0.2.2",
+    "stylus": "^0.49.2",
+    "yamljs": "^0.2.1"
+  },
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "coffee-script": "^1.8.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "directory",
+    "tree",
+    "filesystem"
+  ],
+  "author": "xananax@yelostudio.com",
+  "license": "MIT"
+}
