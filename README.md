@@ -8,6 +8,7 @@ Automatically parses:
 - json, xml, yaml
 - coffeescript
 - plain text files
+- browserifies js files that have extension '.bs.js'
 
 Additionally:
 - Provides human-readable size reading ("Mb", "Kb"...)
@@ -36,7 +37,27 @@ For example:
             });
 ```
 
+you can set filters options like so:
+```js
+    t.filterOptions({jade:{/**options**/}});
+```
+You can call options several times with different options, they will all merge.
+
+You can also set
+```js
+    t.devMode('development');
+```
+To set sensible default options (source maps, debug, etc);
+
 To get an idea of filters and what they can do, refer to the `/filters` directory, and check out the tests.
+
+---
+## Additional functions
+skywalker-extended extends (duh) skywalker with the following functions (on top of the series of `filter_XXX()` ones):
+
+- `t.filterOptions({})` to set options for certain filters
+- `t.devMode(string)` to set mode. Defaults to 'development'
+- `t.obtainFilterOptions(pluginName,defs)` this is used internally by the plugins to retrieve their own options.
 
 ---
 ## License

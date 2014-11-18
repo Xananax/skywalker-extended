@@ -3,7 +3,7 @@ var dir = path.resolve(__dirname+'/files')
 var pluginsDir = path.resolve(__dirname+'/../plugins')+'/';
 var chai = require('chai')
 var expect = chai.expect
-var Tree = require('skywalker');
+var Tree = require('../index.js');
 var fs = require('fs');
 chai.should();
 
@@ -140,6 +140,7 @@ describe('CoffeeScript Plugin',function(){
 		getTree('contents','coffeescript').start(function(err,file){
 			var props = file['dummy.coffee']._;
 			props.should.have.property('bin');
+			props.should.have.property('rendered');
 			props.bin(4).should.equal(64);
 			done();
 		});
@@ -151,7 +152,7 @@ describe('Jade Plugin',function(){
 		getTree('contents','jade').start(function(err,file){
 			var props = file['home.jade']._;
 			props.should.have.property('bin');
-			props.bin({prop:'prop'}).should.equal('<div id="something">prop</div>');
+			props.bin({prop:'prop'}).should.equal('\n<div id=\"something\">prop</div>');
 			done();
 		});
 	});
@@ -182,7 +183,7 @@ describe('SASS Plugin',function(){
 		getTree('contents','sass').start(function(err,file){
 			var props = file['dummy.sass']._;
 			props.should.have.property('contents');
-			props.contents.should.equal("body {\n  background: blue; }\n  body a {\n    color: black; }\n");
+			props.contents.should.equal("/* line 1, stdin */\nbody {\n  background: blue; }\n  /* line 1, stdin */\n  body a {\n    color: black; }\n");
 			done();
 		});
 	});
@@ -193,7 +194,18 @@ describe('Stylus Plugin',function(){
 		getTree('contents','stylus').start(function(err,file){
 			var props = file['dummy.styl']._;
 			props.should.have.property('contents');
-			props.contents.should.equal("body {\n  font: 12px Helvetica, Arial, sans-serif;\n}\na.button {\n  -webkit-border-radius: 5px;\n  -moz-border-radius: 5px;\n  border-radius: 5px;\n}\n");
+			props.contents.should.equal("body {\n  font: 12px Helvetica, Arial, sans-serif;\n}\na.button {\n  -webkit-border-radius: 5px;\n  -moz-border-radius: 5px;\n  border-radius: 5px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInRlc3QvZmlsZXMvZHVtbXkuc3R5bCJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFLQTtFQUNFLE1BQW1CLGtDQUFuQjs7QUFFRjtFQVBFLHVCQUFzQixJQUF0QjtFQUNBLG9CQUFtQixJQUFuQjtFQUNBLGVBQWMsSUFBZCIsImZpbGUiOiJkdW1teS5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyJib3JkZXItcmFkaXVzKClcbiAgLXdlYmtpdC1ib3JkZXItcmFkaXVzIGFyZ3VtZW50c1xuICAtbW96LWJvcmRlci1yYWRpdXMgYXJndW1lbnRzXG4gIGJvcmRlci1yYWRpdXMgYXJndW1lbnRzXG5cbmJvZHlcbiAgZm9udCAxMnB4IEhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWZcblxuYS5idXR0b25cbiAgYm9yZGVyLXJhZGl1cyg1cHgpIl19 */");
+			done();
+		});
+	});
+});
+
+describe('Browserify Plugin',function(){
+	it("should browserify .bs.js files",function(done){
+		getTree('browserify').start(function(err,file){
+			var props = file['dummy.bs.js']._;
+			props.should.have.property('contents');
+			props.contents.should.match(/^\(function/);
 			done();
 		});
 	});
@@ -201,7 +213,6 @@ describe('Stylus Plugin',function(){
 
 describe('Setting plugins on',function(){
 	it("should allow to set plugins by calling filter_<plugin_name>",function(){
-		var Tree = require('../index.js')
 		var t = Tree(dir)
 			.ignoreDotFiles()
 			.filter_contents()

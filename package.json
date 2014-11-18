@@ -1,12 +1,13 @@
 {
   "name": "skywalker-x",
-  "version": "0.5.0",
+  "version": "0.5.2",
   "description": "Builds on [skywalker](https://github.com/Xananax/skywalker) and provides several filters and convenience functions.",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "dependencies": {
+    "browserify": "^6.3.2",
     "checksum": "^0.1.1",
     "filesize": "^2.0.4",
     "image-size": "^0.3.5",
@@ -15,6 +16,7 @@
     "markdown": "^0.5.0",
     "node-sass": "^1.2.2",
     "node-xml-lite": "^0.0.3",
+    "node.extend": "^1.1.3",
     "skywalker": "^0.2.2",
     "stylus": "^0.49.2",
     "yamljs": "^0.2.1"

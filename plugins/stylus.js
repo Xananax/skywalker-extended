@@ -9,8 +9,16 @@ module.exports = function(tree,key){
 	tree.extensionFilter('styl stylus',function(next,done){
 		var props = this[key];
 		var contents = props.contents;
-		stylus.render(contents, { filename: props.path }, function(err, css){
-			if(err){props.error = err;return next();}
+		var opts = tree.obtainFilterOptions('stylus',{
+			common:{filename:props.path}
+		,	dev:{sourcemap:{inline:true}}
+		,	prod:{compress:true}
+		});
+		stylus.render(contents,opts, function(err, css){
+			if(err){
+				css = 'body:after{position:absolute;top:0;left:0;right:0;background:red;color:white;display:block;content:"'+err+'"}'
+				props.error = err;
+			}
 			props.setProp('contents',css);
 			next();
 		});

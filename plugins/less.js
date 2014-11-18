@@ -9,6 +9,11 @@ module.exports = function(tree,key){
 	tree.extensionFilter('less',function(next,done){
 		var props = this[key];
 		var contents = props.contents;
+		var opts = tree.obtainFilterOptions('less',{
+			common:{filename:props.path}
+		,	dev:{env: "development"}
+		,	prod:{}
+		});
 		less.render(contents,function(err,output){
 			if(err){props.error = err;return next();}
 			props.setProp('contents',output);
