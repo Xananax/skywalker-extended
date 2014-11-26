@@ -7,6 +7,7 @@ module.exports = function(tree,key){
 			sizeOf(props.path, function(err,d) {
 				if(err){
 					props.error = err;
+					if(tree.devMode()=='development'){throw err;}
 					next();
 				}
 				var imageProps = {

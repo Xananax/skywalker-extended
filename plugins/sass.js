@@ -14,11 +14,12 @@ module.exports = function(tree,key){
 				data:contents
 			,	includePaths:[props.dirname]
 			,	success:function(css){
-					props.setProp('contents',css);
+					props.setProp('rendered',css);
 					next();
 				}
 			,	error:function(error){
 					props.error = error;
+					if(tree.devMode()=='development'){throw err;}
 					next();
 				}
 			}

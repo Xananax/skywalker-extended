@@ -1,6 +1,6 @@
 {
   "name": "skywalker-x",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Builds on [skywalker](https://github.com/Xananax/skywalker) and provides several filters and convenience functions.",
   "main": "index.js",
   "directories": {

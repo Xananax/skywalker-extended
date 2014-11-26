@@ -13,6 +13,7 @@ module.exports = function(tree,key){
 			props.setProp('data',json);
 		}catch(err){
 			props.error = err;
+			if(tree.devMode()=='development'){throw err;}
 		}
 		next();
 	});

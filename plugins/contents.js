@@ -7,6 +7,7 @@ module.exports = function(tree,key){
 		require('fs').readFile(props.path,{encoding:'utf8'},function(err,contents){
 			if(err){
 				props.error = err;
+				if(tree.devMode()=='development'){throw err;}
 				return next();
 			}
 			props.setProp('contents',contents);

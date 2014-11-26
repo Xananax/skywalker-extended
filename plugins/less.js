@@ -15,8 +15,12 @@ module.exports = function(tree,key){
 		,	prod:{}
 		});
 		less.render(contents,function(err,output){
-			if(err){props.error = err;return next();}
-			props.setProp('contents',output);
+			if(err){
+				props.error = err;
+				if(tree.devMode()=='development'){throw err;}
+				return next();
+			}
+			props.setProp('rendered',output);
 			next();
 		});
 	});

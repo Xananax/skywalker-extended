@@ -171,8 +171,8 @@ describe('Less Plugin',function(){
 			"}\n";
 		getTree('contents','less').start(function(err,file){
 			var props = file['dummy.less']._;
-			props.should.have.property('contents');
-			props.contents.should.equal(rendered);
+			props.should.have.property('rendered');
+			props.rendered.should.equal(rendered);
 			done();
 		});
 	});
@@ -182,8 +182,8 @@ describe('SASS Plugin',function(){
 	it("Should read and parse SASS files",function(done){
 		getTree('contents','sass').start(function(err,file){
 			var props = file['dummy.sass']._;
-			props.should.have.property('contents');
-			props.contents.should.equal("/* line 1, stdin */\nbody {\n  background: blue; }\n  /* line 1, stdin */\n  body a {\n    color: black; }\n");
+			props.should.have.property('rendered');
+			props.rendered.should.equal("/* line 1, stdin */\nbody {\n  background: blue; }\n  /* line 1, stdin */\n  body a {\n    color: black; }\n");
 			done();
 		});
 	});
@@ -193,8 +193,8 @@ describe('Stylus Plugin',function(){
 	it("Should read and parse stylus files",function(done){
 		getTree('contents','stylus').start(function(err,file){
 			var props = file['dummy.styl']._;
-			props.should.have.property('contents');
-			props.contents.should.equal("body {\n  font: 12px Helvetica, Arial, sans-serif;\n}\na.button {\n  -webkit-border-radius: 5px;\n  -moz-border-radius: 5px;\n  border-radius: 5px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInRlc3QvZmlsZXMvZHVtbXkuc3R5bCJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFLQTtFQUNFLE1BQW1CLGtDQUFuQjs7QUFFRjtFQVBFLHVCQUFzQixJQUF0QjtFQUNBLG9CQUFtQixJQUFuQjtFQUNBLGVBQWMsSUFBZCIsImZpbGUiOiJkdW1teS5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyJib3JkZXItcmFkaXVzKClcbiAgLXdlYmtpdC1ib3JkZXItcmFkaXVzIGFyZ3VtZW50c1xuICAtbW96LWJvcmRlci1yYWRpdXMgYXJndW1lbnRzXG4gIGJvcmRlci1yYWRpdXMgYXJndW1lbnRzXG5cbmJvZHlcbiAgZm9udCAxMnB4IEhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWZcblxuYS5idXR0b25cbiAgYm9yZGVyLXJhZGl1cyg1cHgpIl19 */");
+			props.should.have.property('rendered');
+			props.rendered.should.equal("body {\n  font: 12px Helvetica, Arial, sans-serif;\n}\na.button {\n  -webkit-border-radius: 5px;\n  -moz-border-radius: 5px;\n  border-radius: 5px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInRlc3QvZmlsZXMvZHVtbXkuc3R5bCJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFLQTtFQUNFLE1BQW1CLGtDQUFuQjs7QUFFRjtFQVBFLHVCQUFzQixJQUF0QjtFQUNBLG9CQUFtQixJQUFuQjtFQUNBLGVBQWMsSUFBZCIsImZpbGUiOiJkdW1teS5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyJib3JkZXItcmFkaXVzKClcbiAgLXdlYmtpdC1ib3JkZXItcmFkaXVzIGFyZ3VtZW50c1xuICAtbW96LWJvcmRlci1yYWRpdXMgYXJndW1lbnRzXG4gIGJvcmRlci1yYWRpdXMgYXJndW1lbnRzXG5cbmJvZHlcbiAgZm9udCAxMnB4IEhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWZcblxuYS5idXR0b25cbiAgYm9yZGVyLXJhZGl1cyg1cHgpIl19 */");
 			done();
 		});
 	});
@@ -204,8 +204,8 @@ describe('Browserify Plugin',function(){
 	it("should browserify .bs.js files",function(done){
 		getTree('browserify').start(function(err,file){
 			var props = file['dummy.bs.js']._;
-			props.should.have.property('contents');
-			props.contents.should.match(/^\(function/);
+			props.should.have.property('rendered');
+			props.rendered.should.match(/^\(function/);
 			done();
 		});
 	});
@@ -221,5 +221,26 @@ describe('Setting plugins on',function(){
 			.filter_websafe();
 		;
 		t._plugins_set.length.should.equal(4);
+	});
+});
+
+describe('Re-Processing on watch',function(){
+	it("should set markdown content on the file",function(done){
+		var filename = dir+'/read.md';
+		var content = '## '+Math.random();
+		var t = getTree('contents','markdown')
+			.on('changed',function(file){
+				var props = file._;
+				props.should.have.property('rendered');
+				var markdown = require('markdown').markdown;
+				var source = fs.readFileSync(filename,{encoding:'utf8'});
+				var rendered = markdown.toHTML(source);
+				props.rendered.should.equal(rendered);
+				t.unwatch();
+				done();
+			})
+			.watch('gaze',function(err,file){
+				fs.writeFileSync(filename,content,{encoding:'utf8'});
+			});
 	});
 });
